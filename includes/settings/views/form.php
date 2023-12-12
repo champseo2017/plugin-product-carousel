@@ -7,6 +7,14 @@
 <body>
     <div class="wrap max-w-4xl mx-auto py-8">
         <h1 class="text-2xl font-bold mb-6">Product Carousel Settings</h1>
+        <!-- Explanatory card about the importance of domain settings -->
+        <div class="bg-white p-4 shadow-md rounded mb-4">
+            <h2 class="text-lg font-semibold mb-2">Why Domain Settings Matter?</h2>
+            <p class="text-gray-600">
+                Domain settings are crucial for ensuring that only authorized sources can access and interact with your plugin. By specifying trusted domains, you enhance security and prevent unauthorized use. This control helps in managing how and where your plugin is utilized, safeguarding your content and user experience.
+            </p>
+        </div>
+
         <form method="post" action="options.php" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <?php settings_fields( 'plugin-settings-group' ); ?>
             <?php do_settings_sections( 'plugin-settings-group' ); ?>
