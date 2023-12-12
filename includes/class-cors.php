@@ -10,15 +10,19 @@ class Plugin_CORS {
     }
 
     public function cors_headers( $value ) {
-        $domain = $_SERVER['HTTP_HOST'];
-
-        if (isset($_SERVER['HTTP_ORIGIN'])) {
-            $domain = $_SERVER['HTTP_ORIGIN']; 
+        // Get the allowed domains from the WordPress options
+        $allowed_domains = get_option('allowed_domains', []);
+    
+        $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : $_SERVER['HTTP_HOST'];
+    
+        // Check if the origin is in the list of allowed domains
+        if (in_array($origin, $allowed_domains)) {
+            header('Access-Control-Allow-Origin: '.$origin);
+            header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
+            header('Access-Control-Allow-Headers: X-Requested-With, Content-Type, Authorization');
         }
-
-        header('Access-Control-Allow-Origin: '.$domain);
-        header( 'Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE' );
-        header( 'Access-Control-Allow-Headers: X-Requested-With, Content-Type, Authorization' );
+    
         return $value;
     }
+    
 }

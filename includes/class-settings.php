@@ -1,8 +1,18 @@
 <?php
+require_once plugin_dir_path( __FILE__ ) . 'class-logger.php';
 class Plugin_Settings {
+   
     public function __construct() {
         add_action( 'admin_menu', array( $this, 'add_plugin_settings_page' ) );
         add_action( 'admin_init', array( $this, 'register_plugin_settings' ) );
+    }
+
+    public function log_to_debug( $message ) {
+        if ( defined('WP_DEBUG') && WP_DEBUG ) {
+            if ( defined('WP_DEBUG_LOG') && WP_DEBUG_LOG ) {
+                error_log( print_r( $message, true ) );
+            }
+        }
     }
 
     public function add_plugin_settings_page() {
@@ -18,27 +28,30 @@ class Plugin_Settings {
     }
 
     public function display_plugin_settings_page() {
-        ?>
-        <div class="wrap">
-            <h1>Product Carousel Settings</h1>
-            <form method="post" action="options.php">
-                <?php
-                settings_fields( 'plugin-settings-group' );
-                do_settings_sections( 'plugin-settings-group' );
-                ?>
-                <table class="form-table">
-                    <tr valign="top">
-                    <th scope="row">Allowed Domains</th>
-                    <td><input type="text" name="allowed_domains" value="<?php echo esc_attr( get_option('allowed_domains') ); ?>" /></td>
-                    </tr>
-                </table>
-                <?php submit_button(); ?>
-            </form>
-        </div>
-        <?php
+        include plugin_dir_path( __FILE__ ) . 'settings/views/form.php';
     }
+    
 
     public function register_plugin_settings() {
-        register_setting( 'plugin-settings-group', 'allowed_domains' );
+        register_setting( 'plugin-settings-group', 'allowed_domains', array(
+            'type' => 'array',
+            'sanitize_callback' => array($this, 'sanitize_allowed_domains')
+        ));
     }
+
+    public function sanitize_allowed_domains($inputs) {
+        $sanitized_inputs = array();
+        // Check if $inputs is an array
+        if (is_array($inputs)) {
+            foreach ($inputs as $input) {
+                // Perform your sanitization logic here
+                if (filter_var($input, FILTER_VALIDATE_URL)) {
+                    $sanitized_inputs[] = $input;
+                }
+            }
+        }
+        // Plugin_Logger::log_to_debug("ข้อความของคุณที่นี่");
+        return $sanitized_inputs;
+    }
+      
 }

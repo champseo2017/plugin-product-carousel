@@ -1,10 +1,12 @@
 <?php
 /**
 * Plugin Name: Product Carousel
-* Description: A simple WordPress plugin with React.js
+* Description: An elegant and dynamic product carousel plugin for showcasing items in an interactive slider format. Ideal for e-commerce websites, this plugin offers a sleek and user-friendly way to display products attractively.
 * Version: 1.0
-* Author: Your Name
+* Author: Easy GG | Champion of User-Centric Web Solutions
+* Author URI: https://github.com/champseo2017/plugin-product-carousel
 */
+
 
 // ตรวจสอบว่าค่าคงที่ ABSPATH ถูกกำหนดหรือไม่
 if ( ! defined( 'ABSPATH' ) ) {
