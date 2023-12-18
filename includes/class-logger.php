@@ -1,5 +1,7 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 class Plugin_Logger {
 
     public static function log_to_debug( $message ) {

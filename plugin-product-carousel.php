@@ -14,13 +14,17 @@ if ( ! defined( 'ABSPATH' ) ) {
     // หยุดการทำงานของสคริปต์ถ้าไม่ได้ถูกเรียกจาก WordPress
 }
 
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-rest-api.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-cors.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-settings.php';
+add_action('plugins_loaded', function() {
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-rest-api.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-cors.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-settings.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/class-product-controller.php';
 
-new Plugin_REST_API();
-new Plugin_CORS();
-new Plugin_Settings();
+    $rest_api = new Plugin_REST_API();
+    $cors = new Plugin_CORS();
+    $settings = new Plugin_Settings();
+    $product_controller = new Product_Controller();
+});
 
 function my_react_plugin_script() {
     $dir = plugin_dir_path( __FILE__ ) . 'dist/assets/';
@@ -34,3 +38,9 @@ function my_react_plugin_script() {
     }
 }
 add_action( 'wp_enqueue_scripts', 'my_react_plugin_script' );
+
+function product_carousel_shortcode() {
+    return '<div id="my-react-app"></div>';
+    // ตำแหน่งที่ React component ของคุณจะถูก render
+}
+add_shortcode( 'product_carousel', 'product_carousel_shortcode' );

@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+require_once plugin_dir_path( __FILE__ ) . 'class-logger.php';
 class Plugin_CORS {
     public function __construct() {
         add_action( 'rest_api_init', array( $this, 'handle_cors' ), 15 );
@@ -12,6 +16,8 @@ class Plugin_CORS {
     public function cors_headers( $value ) {
         // Get the allowed domains from the WordPress options
         $allowed_domains = get_option('allowed_domains', []);
+
+        Plugin_Logger::log_to_debug("check HTTP_ORIGIN ". $_SERVER['HTTP_ORIGIN']);
     
         $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : $_SERVER['HTTP_HOST'];
     

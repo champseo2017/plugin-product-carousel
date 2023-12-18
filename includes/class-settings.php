@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 require_once plugin_dir_path( __FILE__ ) . 'class-logger.php';
 class Plugin_Settings {
    
@@ -18,17 +21,30 @@ class Plugin_Settings {
     public function add_plugin_settings_page() {
         add_menu_page(
             'Product Carousel Settings',
-            'Carousel Settings',
+            'Product Carousel Settings',
             'manage_options',
-            'product-carousel-settings',
-            array( $this, 'display_plugin_settings_page' ),
+            'domain-carousel-settings',
+            array( $this, 'display_domain_settings_page' ),
             'dashicons-admin-generic',
             20
+        );
+
+        add_submenu_page(
+            'domain-carousel-settings',
+            'Slides Settings',
+            'Slides Settings',
+            'manage_options',
+            'slides-settings',
+            array( $this, 'display_plugin_settings_page' )
         );
     }
 
     public function display_plugin_settings_page() {
-        include plugin_dir_path( __FILE__ ) . 'settings/views/form.php';
+        include plugin_dir_path( __FILE__ ) . 'slidesSettings/views/slidesSettings.php';
+    }
+
+    public function display_domain_settings_page() {
+        include plugin_dir_path( __FILE__ ) . 'domainSettings/views/form.php';
     }
     
 

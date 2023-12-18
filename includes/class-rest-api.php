@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 class Plugin_REST_API {
     public function __construct() {
         add_action( 'rest_api_init', array( $this, 'register_routes' ) );
@@ -12,8 +15,8 @@ class Plugin_REST_API {
         ));
     }
 
-    public function handle_request( $request ) {
-        // จัดการคำขอ API ที่นี่
+    public function handle_request($request) {
+        return new WP_REST_Response('Hello World', 200);
     }
 
     public function permissions_check( $request ) {

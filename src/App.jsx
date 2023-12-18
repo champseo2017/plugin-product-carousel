@@ -1,53 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
+import axios from "axios";
 
 const isDevelopment = import.meta.env.MODE === "development";
 
-function App() {
-  const [response, setResponse] = useState("");
+const endPointApi = import.meta.env.VITE_API_ENDPOINT;
 
-  const ajaxUrl = isDevelopment
-    ? "http://localhost:10004/wp-admin/admin-ajax.php"
-    : myReactApp.ajax_url;
+const App = () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${endPointApi}/wp-json/product-carousel/api/v1/testGet`
+        );
+        console.log("response", response);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
 
-  if (!isDevelopment) {
-    console.log("myReactApp", myReactApp);
-  }
-
-  const sendAjaxRequest = () => {
-    const params = new URLSearchParams({
-      action: "my_react_action",
-    });
-
-    if (!isDevelopment && myReactApp && myReactApp.nonce) {
-      params.append("nonce", myReactApp.nonce);
-    }
-
-    fetch(ajaxUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: params,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setResponse(data);
-      })
-      .catch((error) => console.error("Error:", error));
-  };
+    fetchData();
+  }, []);
 
   return (
     <>
       <div className="App">
         <h1>Welcome to My WordPress Plugin!</h1>
-        <button onClick={sendAjaxRequest}>Send AJAX Request</button>
-        <div>Response: {JSON.stringify(response)}</div>
       </div>
     </>
   );
-}
+};
 
 export default App;
