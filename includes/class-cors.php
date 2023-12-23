@@ -16,8 +16,9 @@ class Plugin_CORS {
     public function cors_headers( $value ) {
         // Get the allowed domains from the WordPress options
         $allowed_domains = get_option('allowed_domains', []);
+        
 
-        Plugin_Logger::log_to_debug("check HTTP_ORIGIN ". $_SERVER['HTTP_ORIGIN']);
+        // Plugin_Logger::log_to_debug("check HTTP_ORIGIN " . json_encode($allowed_domains));
     
         $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : $_SERVER['HTTP_HOST'];
     

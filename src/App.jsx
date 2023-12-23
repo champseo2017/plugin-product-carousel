@@ -11,10 +11,13 @@ const endPointApi = import.meta.env.VITE_API_ENDPOINT;
 const App = () => {
   useEffect(() => {
     const fetchData = async () => {
+      const protocol = window.location.protocol; // ดึงโปรโตคอล (http: หรือ https:)
+      const host = window.location.host; // ดึง host (เช่น localhost:5173)
+      const apiUrl = isDevelopment
+        ? `${endPointApi}/wp-json/product-carousel/api/v1/testGet`
+        : `${protocol}//${host}/wp-json/product-carousel/api/v1/testGet`;
       try {
-        const response = await axios.get(
-          `${endPointApi}/wp-json/product-carousel/api/v1/testGet`
-        );
+        const response = await axios.get(apiUrl);
         console.log("response", response);
       } catch (error) {
         console.error("Error fetching data: ", error);
