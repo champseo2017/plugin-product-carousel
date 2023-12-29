@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-class Plugin_REST_API {
+class RestApiController {
     public function __construct() {
         add_action( 'rest_api_init', array( $this, 'register_routes' ) );
     }

@@ -15,15 +15,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 add_action('plugins_loaded', function() {
-    require_once plugin_dir_path( __FILE__ ) . 'includes/class-rest-api.php';
-    require_once plugin_dir_path( __FILE__ ) . 'includes/class-cors.php';
-    require_once plugin_dir_path( __FILE__ ) . 'includes/class-settings.php';
-    require_once plugin_dir_path( __FILE__ ) . 'includes/class-product-controller.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/core/class-cors.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/controllers/menuController.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/controllers/productCarouselController.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/controllers/settingsController.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/helper/validation/carousel/carouselValidation.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/controllers/restApiController.php';
 
-    $rest_api = new Plugin_REST_API();
     $cors = new Plugin_CORS();
-    $settings = new Plugin_Settings();
-    $product_controller = new Product_Controller();
+    $rest_api = new RestApiController();
+    $menuPage = new MenuController();
 });
 
 function my_react_plugin_script() {
