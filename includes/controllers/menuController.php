@@ -31,6 +31,15 @@ class MenuController {
             'add-new-carousel',        // ชื่อ slug ของ submenu
             array( $this, 'display_add_new_carousel_page' ) // ฟังก์ชันที่จะเรียกเมื่อหน้า submenu ถูกแสดง
         );
+         // เพิ่ม submenu สำหรับการแสดงรายการ Carousel
+        add_submenu_page(
+            'domain-carousel-settings',
+            'List Carousel',
+            'List Carousel',
+            'manage_options',
+            'list-carousel',
+            array( $this, 'listCarouselsPage' )
+        );
     }
 
     public function display_domain_settings_page() {
@@ -39,6 +48,10 @@ class MenuController {
 
     public function display_add_new_carousel_page() {
         return $this->productCarousel->addNewCarouselPage();
+     }
+
+     public function listCarouselsPage() {
+        return $this->productCarousel->listPage();
      }
       
 }
