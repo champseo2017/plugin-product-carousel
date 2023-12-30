@@ -12,16 +12,9 @@ $total = $result['total'];
 $currentPage = $result['currentPage'];
 $lastPage = $result['lastPage'];
 ?>
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <!-- Tailwind CSS ผ่าน CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+<link href="<?php echo plugins_url('css/lestCarouselStyles.css', __FILE__); ?>" rel="stylesheet">
 </head>
-<body class="bg-gray-100">
-    <div class="container mx-auto p-8">
-        <h1 class="text-xl font-bold mb-4">Debug Product Carousel</h1>
-        <pre><?php var_dump($result); ?></pre> <!-- แสดงข้อมูล $result ออกมา -->
+    <div class="lestCarousel-container">
+        <h1 class="lestCarousel-heading">List Product Carousel</h1>
     </div>
-</body>
-</html>

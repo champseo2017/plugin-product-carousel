@@ -1,0 +1,14 @@
+/* Container */
+div.lestCarousel-container {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2rem;
+}
+
+/* Heading */
+h1.lestCarousel-heading {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}

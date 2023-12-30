@@ -35,10 +35,6 @@ class ProductCarouselController {
         $language = isset($_GET['language']) ? $_GET['language'] : 'th';
         $page = max(1, isset($_GET['pg']) ? (int)$_GET['pg'] : 1);
         $perPage = max(10, isset($_GET['totalPage']) ? (int)$_GET['totalPage'] : 10);
-
-        echo 'language '. $language . '<br/>';
-        echo 'page ' . $page . '<br/>';
-        echo 'perPage ' . $perPage. '<br/>';
     
         $result = $this->model->listCarousels($language, $page, $perPage);
         
