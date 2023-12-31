@@ -104,3 +104,22 @@
 .page-link.prev-next {
   font-weight: bold;
 }
+
+.total-page-selector {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+}
+
+.page-size-selector {
+  margin-left: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+div.pagination-total {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}

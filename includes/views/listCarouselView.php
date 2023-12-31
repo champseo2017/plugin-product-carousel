@@ -78,7 +78,18 @@ $rowNumber = ($currentPage - 1) * $perPage + 1;
                     </tbody>
                 </table>
                 <div class="pagination-container">
-                    <div class="total-count">Total Items: <?php echo $total; ?></div>
+                    <div class="pagination-total">
+                        <!-- เพิ่มตัวเลือกสำหรับ totalPage -->
+                        <div class="total-page-selector">
+                            <select name="totalPage" onchange="this.form.submit()" class="page-size-selector">
+                                <option value="10" <?php echo $perPage == 10 ? 'selected' : ''; ?>>10 per page</option>
+                                <option value="25" <?php echo $perPage == 25 ? 'selected' : ''; ?>>25 per page</option>
+                                <option value="50" <?php echo $perPage == 50 ? 'selected' : ''; ?>>50 per page</option>
+                                <option value="100" <?php echo $perPage == 100 ? 'selected' : ''; ?>>100 per page</option>
+                            </select>
+                        </div>
+                        <div class="total-count">Total Items: <?php echo $total; ?></div>             
+                    </div>
                     <div class="pagination">
                         <?php if ($currentPage > 1): ?>
                             <a href="?page=list-carousel&pg=<?php echo $currentPage - 1; ?>&language=<?php echo $language; ?>" class="page-link">Previous</a>
