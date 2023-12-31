@@ -1,9 +1,31 @@
+div.global-container {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2rem;
+}
+
+h1.global-heading {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+div.global-card-container {
+  background-color: #ffffff; /* แทน bg-white */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06); /* แทน shadow-md */
+  border-radius: 0.375rem; /* แทน rounded */
+  padding: 1.25rem 2rem 2rem; /* แทน px-8 pt-6 pb-8 */
+  margin-bottom: 1rem; /* แทน mb-4 */
+}
+
 /* Global Label */
-label.global-label {
+div.global-label {
   color: #333;
   font-size: 14px;
   font-weight: bold;
-  margin-bottom: 2px;
+  margin-bottom: 1rem;
 }
 
 /* Global Input */
@@ -23,19 +45,19 @@ input.global-input:focus {
 }
 
 /* Global Select */
-select.global-select {
+select.global-selector {
   border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 10px;
-  width: 100%;
   font-size: 14px;
-  color: #333;
-  transition: box-shadow 0.2s;
-  outline: none;
+  cursor: pointer;
+  padding: 0 24px 0 8px;
+  min-height: 30px;
+  max-width: 25rem;
 }
 
-select.global-select:focus {
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+select.global-selector:focus {
+  outline: none;
+  border-color: #007bff;
 }
 
 /* Global Button */

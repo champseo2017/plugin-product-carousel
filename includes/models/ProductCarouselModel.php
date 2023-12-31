@@ -52,6 +52,26 @@ class ProductCarouselModel
         }
     }
 
+    public function mockData($numberOfItems = 50) {
+        $mockedItems = [];
+    
+        for ($i = 0; $i < $numberOfItems; $i++) {
+            $title = 'Test Carousel ' . mt_rand(1000, 9999); // สร้างชื่อที่มีค่าสุ่ม
+            $language = 'th'; // ตั้งค่าภาษาเป็น 'th'
+    
+            $result = $this->addCarousel($title, $language);
+    
+            if (!isset($result['error'])) {
+                $mockedItems[] = $result;
+            } else {
+                // จัดการกับข้อผิดพลาดที่เกิดขึ้นในกระบวนการเพิ่ม Carousel
+                // ตัวอย่างเช่น, สามารถเพิ่มข้อความลงใน log หรืออื่นๆ
+            }
+        }
+    
+        return $mockedItems;
+    }
+    
     private function carouselExists($title, $language)
     {
         $args = array(
@@ -80,10 +100,12 @@ class ProductCarouselModel
         $query = "
             SELECT wp_posts.*, wp_postmeta.meta_value AS 'language' 
             FROM wp_posts 
-            LEFT JOIN wp_postmeta ON (wp_posts.ID = wp_postmeta.post_id AND wp_postmeta.meta_key = 'language') 
+            INNER JOIN wp_postmeta ON wp_posts.ID = wp_postmeta.post_id AND wp_postmeta.meta_key = 'language'
             WHERE wp_posts.post_type = 'product_carousel' AND wp_postmeta.meta_value = %s
+            ORDER BY wp_posts.post_date DESC
             LIMIT %d, %d
         ";
+
         // เตรียมคำสั่ง SQL โดยใส่ค่าแทนที่ placeholders (%s, %d, %d) ด้วยค่าที่ปลอดภัย
         // %s สำหรับภาษา, %d สำหรับตำแหน่งเริ่มต้น (offset) และ %d สำหรับจำนวนโพสต์ต่อหน้า (perPage)
         $prepared_query = $wpdb->prepare($query, $language, $offset, $perPage);
@@ -104,8 +126,16 @@ class ProductCarouselModel
         }
 
         // นับจำนวนโพสต์ทั้งหมด
-        $total_query = "SELECT COUNT(*) FROM wp_posts WHERE post_type = 'product_carousel'";
-        $total = $wpdb->get_var($total_query);
+        // ปรับแก้ SQL query เพื่อนับจำนวนโพสต์ตามภาษา
+        $total_query = "
+            SELECT COUNT(*) 
+            FROM wp_posts 
+            INNER JOIN wp_postmeta ON wp_posts.ID = wp_postmeta.post_id 
+            WHERE wp_posts.post_type = 'product_carousel' 
+            AND wp_postmeta.meta_key = 'language' 
+            AND wp_postmeta.meta_value = %s
+        ";
+        $total = $wpdb->get_var($wpdb->prepare($total_query, $language));
 
         return [
             'data' => $carousels,

@@ -14,6 +14,9 @@ class ProductCarouselController {
 
     // ฟังก์ชันสำหรับเพิ่ม Carousel ใหม่
     public function addNewCarousel($title, $language = 'th') {
+        
+        // $result = $this->model->mockData();
+        // return ['success' => "Done"];
         $result = $this->model->addCarousel($title, $language);
         
         if (isset($result['error'])) {
@@ -24,6 +27,7 @@ class ProductCarouselController {
         $new_title = $result['title'];
 
         return ['success' => "{$id} {$new_title}"];
+        
     }
 
     public function addNewCarouselPage() {

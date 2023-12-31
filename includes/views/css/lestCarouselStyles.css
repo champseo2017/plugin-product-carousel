@@ -1,14 +1,106 @@
-/* Container */
-div.lestCarousel-container {
-  max-width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 2rem;
+/* table */
+.lestCarousel-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
 }
 
-/* Heading */
-h1.lestCarousel-heading {
-  font-size: 1.5rem;
+.lestCarousel-table th,
+.lestCarousel-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.lestCarousel-table th {
+  background-color: #f4f4f4;
+}
+
+.lestCarousel-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.lestCarousel-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.lestCarousel-btn-edit,
+.lestCarousel-btn-delete {
+  padding: 6px 12px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.lestCarousel-btn-edit {
+  background-color: #4caf50;
+  color: white;
+}
+
+.lestCarousel-btn-delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.lestCarousel-table .data-not-found {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 1.2rem;
+}
+
+/* Pagination container styles */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-top: 1px solid #ddd;
+}
+
+/* Total count styles */
+.total-count {
+  font-size: 16px;
   font-weight: bold;
-  margin-bottom: 1rem;
+}
+
+/* Pagination link container */
+.pagination {
+  display: flex;
+}
+
+/* Pagination link styles */
+.page-link {
+  padding: 8px 12px;
+  margin: 0 5px;
+  text-decoration: none;
+  color: #007bff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Hover effect for pagination links */
+.page-link:hover {
+  background-color: #f8f9fa;
+  color: #0056b3;
+}
+
+/* Active link styles */
+.page-link.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Pagination link disabled state */
+.page-link.disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Styling for 'Previous' and 'Next' links */
+.page-link.prev-next {
+  font-weight: bold;
 }
