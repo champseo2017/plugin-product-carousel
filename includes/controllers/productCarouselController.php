@@ -61,4 +61,16 @@ class ProductCarouselController {
     public function listPage() {
         include plugin_dir_path( __FILE__ ) . '../views/listCarouselView.php';
     }
+
+    public function deleteCarousel() {
+        // ตรวจสอบว่ามีค่า carouselId ที่ส่งมาจาก POST หรือไม่
+        if (isset($_POST['id'])) {
+            $carouselId = $_POST['id'];
+            $result = $this->model->deleteNonPublicCarousel($carouselId);
+            return $result;
+        } else {
+            // ไม่พบ carouselId ในค่า POST
+            return ['error' => 'Carousel ID is required.'];
+        }
+    }
 }

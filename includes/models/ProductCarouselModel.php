@@ -98,11 +98,11 @@ class ProductCarouselModel
         $offset = ($page - 1) * $perPage;
         // สร้างคำสั่ง SQL สำหรับดึงข้อมูล Carousel
         $query = "
-            SELECT wp_posts.*, wp_postmeta.meta_value AS 'language' 
-            FROM wp_posts 
-            INNER JOIN wp_postmeta ON wp_posts.ID = wp_postmeta.post_id AND wp_postmeta.meta_key = 'language'
-            WHERE wp_posts.post_type = 'product_carousel' AND wp_postmeta.meta_value = %s
-            ORDER BY wp_posts.post_date DESC
+            SELECT {$wpdb->posts}.*, wp_postmeta.meta_value AS 'language' 
+            FROM {$wpdb->posts} 
+            INNER JOIN wp_postmeta ON {$wpdb->posts}.ID = wp_postmeta.post_id AND wp_postmeta.meta_key = 'language'
+            WHERE {$wpdb->posts}.post_type = 'product_carousel' AND wp_postmeta.meta_value = %s
+            ORDER BY {$wpdb->posts}.post_date DESC
             LIMIT %d, %d
         ";
 
@@ -129,9 +129,9 @@ class ProductCarouselModel
         // ปรับแก้ SQL query เพื่อนับจำนวนโพสต์ตามภาษา
         $total_query = "
             SELECT COUNT(*) 
-            FROM wp_posts 
-            INNER JOIN wp_postmeta ON wp_posts.ID = wp_postmeta.post_id 
-            WHERE wp_posts.post_type = 'product_carousel' 
+            FROM {$wpdb->posts} 
+            INNER JOIN wp_postmeta ON {$wpdb->posts}.ID = wp_postmeta.post_id 
+            WHERE {$wpdb->posts}.post_type = 'product_carousel' 
             AND wp_postmeta.meta_key = 'language' 
             AND wp_postmeta.meta_value = %s
         ";
@@ -144,4 +144,38 @@ class ProductCarouselModel
             'lastPage' => ($perPage > 0) ? ceil($total / $perPage) : 0,
         ];
     }
+
+    public function deleteNonPublicCarousel($carouselId) {
+        global $wpdb;
+    
+        // ดึงข้อมูลของ carousel ก่อนลบ
+        $carousel = $wpdb->get_row($wpdb->prepare("SELECT ID, post_title FROM {$wpdb->posts} WHERE ID = %d AND post_type = %s", $carouselId, 'product_carousel'), ARRAY_A);
+    
+        if (is_null($carousel)) {
+            return ['error' => 'Carousel not found'];
+        }
+    
+        // SQL สำหรับลบ product_carousel ที่ไม่ใช่ public
+        $sql = "DELETE FROM {$wpdb->posts} WHERE ID = %d AND post_type = %s AND post_status != %s";
+        
+        // ใช้ $wpdb->prepare เพื่อป้องกัน SQL Injection
+        $prepared_query = $wpdb->prepare($sql, $carouselId, 'product_carousel', 'publish');
+        
+        // ทำการลบ
+        $result = $wpdb->query($prepared_query);
+        
+        // ตรวจสอบและคืนค่าผลลัพธ์
+        if ($result === false) {
+            return ['error' => 'Error in deleting the non-public carousel'];
+        } else {
+             // คืนค่าข้อมูลของ carousel ที่ถูกลบ
+            return [
+                'success' => "Carousel deleted success {$carousel['ID']} {$carousel['post_title']}",
+                'id' => $carousel['ID'],
+                'title' => $carousel['post_title']
+            ];
+        }
+    }
+    
+    
 }
