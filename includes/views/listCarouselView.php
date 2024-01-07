@@ -92,7 +92,8 @@ $rowNumber = ($currentPage - 1) * $perPage + 1;
                                     <td><?php echo htmlspecialchars($item['date_modified']); ?></td>
                                     <td><?php echo strtoupper(htmlspecialchars($item['language'])); ?></td>
                                     <td>
-                                        <button class="lestCarousel-btn-edit">Edit</button>
+                                       <!-- ปุ่ม Edit ที่แต่ละ Carousel -->
+                                        <a href="admin.php?page=update-carousel&id=<?php echo htmlspecialchars($item['id']); ?>" class="lestCarousel-btn-edit">Edit</a>
                                        <!-- ปุ่ม Delete ที่แต่ละ Carousel -->
                                        <button class="lestCarousel-btn-delete" 
                                         onclick="showDeleteConfirmation(<?php echo htmlspecialchars($item['id']); ?>, '<?php echo htmlspecialchars($item['title']); ?>')"

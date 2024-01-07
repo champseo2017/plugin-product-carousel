@@ -40,6 +40,15 @@ class MenuController {
             'list-carousel',
             array( $this, 'listCarouselsPage' )
         );
+        // เพิ่ม submenu 'Update Carousel'
+        add_submenu_page(
+            null, // ทำให้ submenu นี้ไม่แสดงในเมนูแอดมิน
+            'Update Carousel',  // ชื่อหน้าของ submenu
+            'Update Carousel',   // ข้อความที่แสดงในเมนู (จะไม่ถูกแสดง)
+            'manage_options',   // สิทธิ์ที่จำเป็นในการเข้าถึง submenu นี้
+            'update-carousel', // ชื่อ slug ของ submenu
+            array( $this, 'updateCarousel' ) // ฟังก์ชันที่จะเรียกเมื่อหน้า submenu ถูกแสดง
+        );
     }
 
     public function display_domain_settings_page() {
@@ -52,6 +61,10 @@ class MenuController {
 
      public function listCarouselsPage() {
         return $this->productCarousel->listPage();
+     }
+
+     public function updateCarousel() {
+        return $this->productCarousel->updateCarouselPage();
      }
       
 }

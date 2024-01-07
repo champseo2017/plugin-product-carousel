@@ -73,4 +73,35 @@ class ProductCarouselController {
             return ['error' => 'Carousel ID is required.'];
         }
     }
+
+    public function updateCarousel($carouselId, $title, $language, $status) {
+        // ทำการเรียกใช้งานฟังก์ชัน updateCarousel จาก ProductCarouselModel
+        $result = $this->model->updateCarousel($carouselId, $title, $language, $status);
+
+        // ทำการตอบกลับข้อมูลหรือข้อผิดพลาด
+        if (isset($result['error'])) {
+            // จัดการกับข้อผิดพลาด
+            return $result;
+        } else {
+            // ส่งค่าข้อมูลกลับหลังจากอัปเดตสำเร็จ
+            return $result;
+        }
+    }
+
+    // ฟังก์ชันสำหรับดึงข้อมูล carousel และจัดการกับผลลัพธ์
+    public function handleGetCarouselData($carouselId) {
+        $result = $this->model->getCarouselData($carouselId);
+        if (isset($result['error'])) {
+            // จัดการกับข้อผิดพลาด
+            // ตัวอย่าง: แสดงข้อความข้อผิดพลาด
+            echo $result;
+        } else if (isset($result['success'])) {
+           return $result;
+        }
+    }
+
+    public function updateCarouselPage() {
+        include plugin_dir_path( __FILE__ ) . '../views/updateCarouselView.php';
+    }
+
 }

@@ -5,6 +5,12 @@ if (!defined('ABSPATH')) {
 
 class ProductCarouselModel
 {
+    private $wpdb;
+
+    public function __construct() {
+        global $wpdb;
+        $this->wpdb = $wpdb;
+    }
 
     public function addCarousel($title, $language = 'th')
     {
@@ -52,6 +58,43 @@ class ProductCarouselModel
         }
     }
 
+    public function updateCarousel($carouselId, $title, $language, $status) {
+        $title = CarouselValidation::validateText($title);
+        $language = CarouselValidation::validateText($language);
+        $status = CarouselValidation::validateText($status);
+    
+        if (get_post_type($carouselId) !== 'product_carousel') {
+            return ['error' => 'Invalid carousel ID'];
+        }
+    
+        $current_time = current_time('mysql');
+        $gmt_time = current_time('mysql', 1);
+    
+        // อัปเดตชื่อ Carousel และวันที่แก้ไข
+        $this->wpdb->update(
+            $this->wpdb->posts, 
+            ['post_title' => $title, 'post_modified' => $current_time, 'post_modified_gmt' => $gmt_time], 
+            ['ID' => $carouselId]
+        );
+    
+        // อัปเดตภาษาในเมตาดาต้า
+        update_post_meta($carouselId, 'language', $language);
+    
+        // อัปเดตสถานะ Carousel และวันที่แก้ไข
+        $this->wpdb->update(
+            $this->wpdb->posts, 
+            ['post_status' => $status, 'post_modified' => $current_time, 'post_modified_gmt' => $gmt_time], 
+            ['ID' => $carouselId]
+        );
+    
+        // ตรวจสอบข้อผิดพลาด
+        if ($this->wpdb->last_error) {
+            return ['error' => 'Update failed'];
+        }
+    
+        return ['success' => 'Update Success'];
+    }
+    
     public function mockData($numberOfItems = 50) {
         $mockedItems = [];
     
@@ -63,9 +106,6 @@ class ProductCarouselModel
     
             if (!isset($result['error'])) {
                 $mockedItems[] = $result;
-            } else {
-                // จัดการกับข้อผิดพลาดที่เกิดขึ้นในกระบวนการเพิ่ม Carousel
-                // ตัวอย่างเช่น, สามารถเพิ่มข้อความลงใน log หรืออื่นๆ
             }
         }
     
@@ -93,24 +133,23 @@ class ProductCarouselModel
     }
 
     public function listCarousels($language, $page = 1, $perPage = 10) {
-        global $wpdb;
 
         $offset = ($page - 1) * $perPage;
         // สร้างคำสั่ง SQL สำหรับดึงข้อมูล Carousel
         $query = "
-            SELECT {$wpdb->posts}.*, wp_postmeta.meta_value AS 'language' 
-            FROM {$wpdb->posts} 
-            INNER JOIN wp_postmeta ON {$wpdb->posts}.ID = wp_postmeta.post_id AND wp_postmeta.meta_key = 'language'
-            WHERE {$wpdb->posts}.post_type = 'product_carousel' AND wp_postmeta.meta_value = %s
-            ORDER BY {$wpdb->posts}.post_date DESC
+            SELECT {$this->wpdb->posts}.*, wp_postmeta.meta_value AS 'language' 
+            FROM {$this->wpdb->posts} 
+            INNER JOIN wp_postmeta ON {$this->wpdb->posts}.ID = wp_postmeta.post_id AND wp_postmeta.meta_key = 'language'
+            WHERE {$this->wpdb->posts}.post_type = 'product_carousel' AND wp_postmeta.meta_value = %s
+            ORDER BY {$this->wpdb->posts}.post_date DESC
             LIMIT %d, %d
         ";
 
         // เตรียมคำสั่ง SQL โดยใส่ค่าแทนที่ placeholders (%s, %d, %d) ด้วยค่าที่ปลอดภัย
         // %s สำหรับภาษา, %d สำหรับตำแหน่งเริ่มต้น (offset) และ %d สำหรับจำนวนโพสต์ต่อหน้า (perPage)
-        $prepared_query = $wpdb->prepare($query, $language, $offset, $perPage);
+        $prepared_query = $this->wpdb->prepare($query, $language, $offset, $perPage);
         // ดึงข้อมูลจากฐานข้อมูลตามคำสั่งที่เตรียมไว้
-        $posts = $wpdb->get_results($prepared_query);
+        $posts = $this->wpdb->get_results($prepared_query);
 
         // จัดการข้อมูลโพสต์
         $carousels = [];
@@ -129,13 +168,13 @@ class ProductCarouselModel
         // ปรับแก้ SQL query เพื่อนับจำนวนโพสต์ตามภาษา
         $total_query = "
             SELECT COUNT(*) 
-            FROM {$wpdb->posts} 
-            INNER JOIN wp_postmeta ON {$wpdb->posts}.ID = wp_postmeta.post_id 
-            WHERE {$wpdb->posts}.post_type = 'product_carousel' 
+            FROM {$this->wpdb->posts} 
+            INNER JOIN wp_postmeta ON {$this->wpdb->posts}.ID = wp_postmeta.post_id 
+            WHERE {$this->wpdb->posts}.post_type = 'product_carousel' 
             AND wp_postmeta.meta_key = 'language' 
             AND wp_postmeta.meta_value = %s
         ";
-        $total = $wpdb->get_var($wpdb->prepare($total_query, $language));
+        $total = $this->wpdb->get_var($this->wpdb->prepare($total_query, $language));
 
         return [
             'data' => $carousels,
@@ -146,23 +185,22 @@ class ProductCarouselModel
     }
 
     public function deleteNonPublicCarousel($carouselId) {
-        global $wpdb;
     
         // ดึงข้อมูลของ carousel ก่อนลบ
-        $carousel = $wpdb->get_row($wpdb->prepare("SELECT ID, post_title FROM {$wpdb->posts} WHERE ID = %d AND post_type = %s", $carouselId, 'product_carousel'), ARRAY_A);
+        $carousel = $this->wpdb->get_row($this->wpdb->prepare("SELECT ID, post_title FROM {$this->wpdb->posts} WHERE ID = %d AND post_type = %s", $carouselId, 'product_carousel'), ARRAY_A);
     
         if (is_null($carousel)) {
             return ['error' => 'Carousel not found'];
         }
     
         // SQL สำหรับลบ product_carousel ที่ไม่ใช่ public
-        $sql = "DELETE FROM {$wpdb->posts} WHERE ID = %d AND post_type = %s AND post_status != %s";
+        $sql = "DELETE FROM {$this->wpdb->posts} WHERE ID = %d AND post_type = %s AND post_status != %s";
         
         // ใช้ $wpdb->prepare เพื่อป้องกัน SQL Injection
-        $prepared_query = $wpdb->prepare($sql, $carouselId, 'product_carousel', 'publish');
+        $prepared_query = $this->wpdb->prepare($sql, $carouselId, 'product_carousel', 'publish');
         
         // ทำการลบ
-        $result = $wpdb->query($prepared_query);
+        $result = $this->wpdb->query($prepared_query);
         
         // ตรวจสอบและคืนค่าผลลัพธ์
         if ($result === false) {
@@ -175,6 +213,27 @@ class ProductCarouselModel
                 'title' => $carousel['post_title']
             ];
         }
+    }
+
+    // ฟังก์ชันสำหรับดึงข้อมูล carousel โดยใช้ ID
+    public function getCarouselData($carouselId) {
+        $post = get_post($carouselId);
+
+        // ตรวจสอบว่าโพสต์มีอยู่จริงและเป็นประเภท 'product_carousel'
+        if ($post && $post->post_type === 'product_carousel') {
+            $postarr = array(
+                'post_title' => $post->post_title,
+                'post_content' => $post->post_content,
+                'post_status' => $post->post_status,
+                'post_type' => $post->post_type,
+                'language' => get_post_meta($carouselId, 'language', true)
+            );
+            // ส่งกลับข้อมูล carousel ในรูปแบบ 'success'
+            return ['success' => true, 'data' => $postarr];
+        }
+
+        // ส่งกลับข้อผิดพลาดหากไม่พบ carousel
+        return ['error' => 'Carousel not found.'];
     }
     
     
